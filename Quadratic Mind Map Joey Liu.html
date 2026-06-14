@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quadratic Mind Map</title>
+<style>
+
+body {
+  margin: 0;
+  background-color: #b9895f;
+  font-family: 'Comic Sans MS', 'Segoe Print', cursive, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: #fff8ec;
+  padding-top: 25px;
+  font-size: 36px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #fff3df;
+  font-size: 14px;
+  margin-top: 0;
+}
+
+.legend {
+  text-align: center;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.legend span {
+  display: inline-block;
+  background: white;
+  padding: 5px 12px;
+  border-radius: 5px;
+  margin: 0 5px;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.25);
+}
+
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+#board {
+  position: relative;
+  width: 2050px;
+  height: 2450px;
+  margin: 0 auto;
+}
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2050px;
+  height: 2450px;
+}
+
+.card {
+  position: absolute;
+  width: 190px;
+  background: #fbf6e9;
+  border: 1px solid #e7dcc2;
+  border-radius: 3px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 3px 5px 10px rgba(0,0,0,0.35);
+}
+
+.card:before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  margin-left: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.catlabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.cardtitle {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.center {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: #fffdf6;
+  border: 3px double #2b2420;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+.center:before { display: none; }
+
+.forms { background: #eef6ee; }
+.forms:before { background: #3f7d5a; }
+.forms .catlabel { color: #3f7d5a; }
+.forms .cardtitle { color: #3f7d5a; }
+
+.solving { background: #fbece1; }
+.solving:before { background: #b5572f; }
+.solving .catlabel { color: #b5572f; }
+.solving .cardtitle { color: #b5572f; }
+
+.systems { background: #efe9f7; }
+.systems:before { background: #6a4f9e; }
+.systems .catlabel { color: #6a4f9e; }
+.systems .cardtitle { color: #6a4f9e; }
+
+.apps { background: #fbf2da; }
+.apps:before { background: #c2932a; }
+.apps .catlabel { color: #c2932a; }
+.apps .cardtitle { color: #c2932a; }
+
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(20,14,10,0.55);
+  z-index: 10;
+}
+
+#popup {
+  background: #fbf6e9;
+  width: 90%;
+  max-width: 540px;
+  margin: 50px auto;
+  padding: 25px;
+  border-radius: 4px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+#popup h2 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.poplabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.poptext {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.example {
+  background: #f3ecd9;
+  border-left: 4px solid #aaa;
+  padding: 9px 13px;
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.connlabel {
+  font-weight: bold;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.connections span {
+  display: inline-block;
+  background: white;
+  border: 1px solid #e7dcc2;
+  border-radius: 12px;
+  padding: 5px 10px;
+  margin: 3px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#closebtn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Quadratic Mind Map</h1>
+<p class="subtitle">Click a card to view more info</p>
+
+<div class="legend">
+  <span><span class="dot" style="background:#3f7d5a"></span>Forms & Conversions</span>
+  <span><span class="dot" style="background:#b5572f"></span>Solving Methods</span>
+  <span><span class="dot" style="background:#6a4f9e"></span>Systems & Inequalities</span>
+  <span><span class="dot" style="background:#c2932a"></span>Applications</span>
+</div>
+
+<div id="board">
+  <svg id="lines"></svg>
+</div>
+
+<div id="overlay">
+  <div id="popup">
+    <button id="closebtn">X</button>
+    <div id="popcontent"></div>
+  </div>
+</div>
+
+<script>
+
+var center = { x: 1010, y: 1180, label: "QUADRATICS" };
+var centerLinks = ["parabola","general","vertexform","quadformula","minmax","quadineq","linquadsys"];
+
+var concepts = [
+  // ---------------- FORMS & CONVERSIONS (green) ----------------
+  {id:"parabola", x:140, y:120, rot:-2, cat:"forms", label:"Parabola",
+    tag:"Forms & Conversions",
+    text:"A parabola is the curved, U-shaped graph produced by any quadratic function written in the form y = ax squared + bx + c. It is symmetric about a vertical line called the axis of symmetry, which always passes through the vertex, the highest or lowest point on the graph. When the leading coefficient a is positive, the parabola opens upward and the vertex is a minimum point. When a is negative, the parabola opens downward and the vertex is a maximum point. The parabola can intersect the x-axis at points called x-intercepts or zeros, and it crosses the y-axis at the y-intercept.",
+    ex1:"y = x squared minus 4x + 3 opens upward with axis of symmetry x = 2 and vertex at (2, -1), which is the minimum point.",
+    ex2:"y = -x squared + 2x + 8 opens downward with vertex (1, 9), which is the maximum point on the graph.",
+    links:["vertex","general","domain"]},
+
+  {id:"vertex", x:520, y:60, rot:1.5, cat:"forms", label:"The Vertex",
+    tag:"Forms & Conversions",
+    text:"The vertex is the turning point of the parabola, where the graph changes direction. It is either the lowest point on the curve (a minimum, when the parabola opens upward) or the highest point (a maximum, when it opens downward). To find the vertex from general form, use the vertex formula x = -b/2a to get the x-coordinate, then substitute that value back into the original equation to find the y-coordinate. If the equation is already in vertex form, the vertex can be read directly from the equation.",
+    ex1:"For y = 2(x - 3) squared + 5, the vertex is (3, 5). Since a = 2 is positive, this is a minimum point.",
+    ex2:"For y = -x squared + 4x, x = -4 / 2(-1) = 2, and substituting gives y = 4. The vertex is (2, 4), which is a maximum since a is negative.",
+    links:["parabola","vertexform","vertexformula","minmax"]},
+
+  {id:"vertexform", x:920, y:30, rot:-1, cat:"forms", label:"Vertex Form",
+    tag:"Forms & Conversions",
+    text:"Vertex form is written as y = a(x - p) squared + q, where the point (p, q) is the vertex of the parabola. The value of a determines whether the parabola opens upward (positive a) or downward (negative a). It also affects the shape: when the absolute value of a is greater than 1, the parabola is narrower than the parent function y = x squared because it has been vertically stretched. When the absolute value of a is between 0 and 1, the parabola is wider because it has been vertically compressed. The p and q values shift the graph horizontally and vertically from the parent function y = x squared.",
+    ex1:"y = -2(x + 1) squared + 4 has vertex (-1, 4), opens downward, and is vertically stretched since the absolute value of a is 2.",
+    ex2:"y = 0.5(x - 2) squared - 3 has vertex (2, -3), opens upward, and is wider than y = x squared since the absolute value of a is 0.5, a vertical compression.",
+    links:["vertex","completesquare","convertVtoG","general"]},
+
+  {id:"general", x:1320, y:30, rot:2, cat:"forms", label:"General Form",
+    tag:"Forms & Conversions",
+    text:"General form is written as y = ax squared + bx + c, where a, b, and c are real number coefficients. The value of a is the leading coefficient, b is the coefficient of the linear term, and c is the constant term which also represents the y-intercept. This form is the one you need when using the quadratic formula and evaluating the discriminant, since both of those use the values of a, b, and c.",
+    ex1:"y = 3x squared - 6x + 1 has leading coefficient a = 3, linear coefficient b = -6, and constant c = 1, so the y-intercept is (0, 1).",
+    ex2:"y = -x squared + 4x - 1 has a = -1, b = 4, and c = -1, so the y-intercept is (0, -1). Since a is negative, the parabola opens downward.",
+    links:["vertexform","trinomials","quadformula","discriminant","convertGtoV"]},
+
+  {id:"convertGtoV", x:1730, y:80, rot:-1.5, cat:"forms", label:"Converting From General Form to Vertex Form",
+    tag:"Forms & Conversions",
+    text:"To convert from general form to vertex form, the process of completing the square is used. The goal is to rewrite the x squared and x terms as a perfect square trinomial, then factor that into a squared binomial of the form (x - p) squared. Then you adjust for any leftover constants, the equation takes the form y = a(x - p) squared + q, which reveals the vertex (p, q) directly.",
+    ex1:"y = x squared + 6x + 5: completing the square gives y = (x + 3) squared - 4, so the vertex is (-3, -4).",
+    ex2:"y = x squared - 8x + 18: completing the square gives y = (x - 4) squared + 2, so the vertex is (4, 2).",
+    links:["general","vertexform","completesquare"]},
+
+  {id:"convertVtoG", x:1820, y:430, rot:2, cat:"forms", label:"Converting From Vertex Form to General Form",
+    tag:"Forms & Conversions",
+    text:"To convert from vertex form to general form, the squared binomial (x - p) squared is expanded using the distributive property. After multiplying through by a and combining like terms, the result is the standard expression y = ax squared + bx + c. It is basically the reverse of completing the square.",
+    ex1:"y = 2(x - 1) squared + 3: expanding gives y = 2(x squared - 2x + 1) + 3 = 2x squared - 4x + 5.",
+    ex2:"y = -3(x + 2) squared - 1: expanding gives y = -3(x squared + 4x + 4) - 1 = -3x squared - 12x - 13.",
+    links:["vertexform","general","convertGtoV"]},
+
+  {id:"trinomials", x:1640, y:790, rot:-2, cat:"forms", label:"Trinomials",
+    tag:"Forms & Conversions",
+    text:"A trinomial is a polynomial expression with exactly three terms, which is basically the same structure as a quadratic written in general form: ax squared + bx + c. Many quadratic trinomials can be factored into the product of two binomials of the form (x + m)(x + n), as long as it has rational factors. You need to factor the trinomial into binomials first when solving a quadratic equation using the zero-product property.",
+    ex1:"x squared + 5x + 6 factors into the product of two binomials: (x + 2)(x + 3).",
+    ex2:"2x squared + 7x + 3 factors into (2x + 1)(x + 3). You can verify this by expanding the binomials back out.",
+    links:["general","zeroproduct","roots"]},
+
+  {id:"domain", x:90, y:480, rot:1, cat:"forms", label:"Domain and Range",
+    tag:"Forms & Conversions",
+    text:"The domain of a function is the set of all valid input values (x-values). For any quadratic function, the domain is always all real numbers, written as x is an element of the real numbers, since any real number can be squared. The range is the set of all possible output values (y-values), and it is restricted by the vertex. If the parabola opens upward, the range is y greater than or equal to q, where q is the y-coordinate of the vertex. If the parabola opens downward, the range is y less than or equal to q.",
+    ex1:"For y = (x - 2) squared + 3, the parabola opens upward. The domain is all real numbers and the range is y is greater than or equal to 3.",
+    ex2:"For y = -2(x + 1) squared - 4, the parabola opens downward. The domain is all real numbers and the range is y is less than or equal to -4.",
+    links:["parabola","vertexform","vertex"]},
+
+  {id:"vertexformula", x:420, y:520, rot:-1.5, cat:"forms", label:"The Vertex Formula",
+    tag:"Forms & Conversions",
+    text:"The vertex formula, x = -b/2a, is a quick way to find the x-coordinate of the vertex and the axis of symmetry from a quadratic equation in general form, without needing to complete the square. Once the x-coordinate is found, it is substituted back into the original equation to evaluate the corresponding y-coordinate, giving the complete coordinates of the vertex.",
+    ex1:"For y = x squared - 4x + 1, x = -(-4)/2(1) = 2. Substituting gives y = (2) squared - 4(2) + 1 = -3, so the vertex is (2, -3).",
+    ex2:"For y = -x squared + 6x - 5, x = -6 / 2(-1) = 3. Substituting gives y = -(3) squared + 6(3) - 5 = 4, so the vertex is (3, 4).",
+    links:["vertex","general","minmax"]},
+
+  {id:"roots", x:760, y:340, rot:2, cat:"forms", label:"Finding Values/Roots From an Equation",
+    tag:"Forms & Conversions",
+    text:"The roots of a quadratic equation, also referred to as zeros or x-intercepts, are the x-values for which y equals zero. These are the solutions to the quadratic equation. There are four standard methods for finding roots: factoring combined with the zero-product property, the square root property, completing the square, and the quadratic formula. Which one is easiest usually depends on the form of the equation.",
+    ex1:"For y = x squared - 9, setting y = 0 gives x squared = 9, so the roots (x-intercepts) are x = 3 and x = -3.",
+    ex2:"For y = 2x squared - 8, setting y = 0 gives x squared = 4, so the roots are x = 2 and x = -2.",
+    links:["zeroproduct","sqrtproperty","completesquare","quadformula","trinomials"]},
+
+  // ---------------- SOLVING METHODS (rust) ----------------
+  {id:"zeroproduct", x:1140, y:430, rot:-1, cat:"solving", label:"Quadratic Eq. Solutions Using the Zero-Product Property",
+    tag:"Solving Methods",
+    text:"The zero-product property states that if the product of two factors is equal to zero, then at least one of those factors must equal zero. In other words, if A times B equals zero, then A equals zero or B equals zero. To apply this to a quadratic, the trinomial is first factored into two binomial factors. Each binomial is then set equal to zero individually, and the resulting linear equations are solved separately to find the two roots.",
+    ex1:"(x - 4)(x + 2) = 0. Setting each factor to zero: x - 4 = 0 gives x = 4, and x + 2 = 0 gives x = -2.",
+    ex2:"(2x + 1)(x - 5) = 0. Setting each factor to zero: 2x + 1 = 0 gives x = -1/2, and x - 5 = 0 gives x = 5.",
+    links:["trinomials","roots","general"]},
+
+  {id:"sqrtproperty", x:150, y:1020, rot:1.5, cat:"solving", label:"Quadratic Eq. Solutions Using the Square Root Property",
+    tag:"Solving Methods",
+    text:"The square root property applies when a quadratic equation can be written in the form (expression) squared equals k. Taking the square root of both sides gives the solution, but a plus-or-minus sign must be included since both a positive and a negative value produce the same result when squared. This one works best when the equation has no linear term, which is commonly the case when working from vertex form.",
+    ex1:"2(x - 3) squared = 8 simplifies to (x - 3) squared = 4. Taking the square root of both sides: x - 3 = plus or minus 2, so x = 5 or x = 1.",
+    ex2:"(x + 4) squared = 9. Taking the square root of both sides: x + 4 = plus or minus 3, so x = -1 or x = -7.",
+    links:["roots","vertexform","completesquare"]},
+
+  {id:"completesquare", x:600, y:1110, rot:-2, cat:"solving", label:"Quadratic Eq. Solutions Using Completing the Square",
+    tag:"Solving Methods",
+    text:"Completing the square is a method that can both convert forms and solve equations directly. To solve an equation, the constant term is moved to the other side, and the x squared and x terms are rewritten as a perfect square trinomial. That trinomial is factored into a squared binomial, and the square root property is then applied to isolate x and find the solutions. This method is also where the quadratic formula actually comes from.",
+    ex1:"x squared + 6x + 5 = 0 becomes (x + 3) squared = 4. Applying the square root property gives x + 3 = plus or minus 2, so x = -1 or x = -5.",
+    ex2:"x squared - 4x - 1 = 0 becomes (x - 2) squared = 5. Applying the square root property gives x = 2 plus or minus the square root of 5.",
+    links:["roots","vertexform","convertGtoV","quadformula"]},
+
+  {id:"quadformula", x:1020, y:1450, rot:1, cat:"solving", label:"The Quadratic Formula",
+    tag:"Solving Methods",
+    text:"The quadratic formula states that x equals negative b plus or minus the square root of b squared minus 4ac, all divided by 2a. It is derived by completing the square on the general form ax squared + bx + c = 0 and solving algebraically. The formula works for any quadratic equation regardless of whether it factors neatly, so it works no matter what the equation looks like. The plus-or-minus symbol indicates that there are generally two solutions, which correspond to the two x-intercepts of the parabola.",
+    ex1:"For x squared - 5x + 6 = 0, x = (5 plus or minus the square root of (25 - 24)) / 2 = (5 plus or minus 1) / 2, giving x = 3 or x = 2.",
+    ex2:"For 2x squared + 3x - 5 = 0, x = (-3 plus or minus the square root of (9 + 40)) / 4 = (-3 plus or minus 7) / 4, giving x = 1 or x = -2.5.",
+    links:["general","roots","discriminant","completesquare"]},
+
+  {id:"discriminant", x:1480, y:1130, rot:-1.5, cat:"solving", label:"The Discriminant",
+    tag:"Solving Methods",
+    text:"The discriminant is the expression b squared minus 4ac, which appears under the radical sign in the quadratic formula. It tells you how many real roots there are before you even fully solve the equation. A positive discriminant indicates two distinct real roots, meaning the parabola crosses the x-axis at two separate points. A discriminant of zero indicates one repeated real root, meaning the vertex of the parabola is tangent to the x-axis. A negative discriminant means there are no real roots and the parabola does not intersect the x-axis at all.",
+    ex1:"For x squared + 2x + 5, the discriminant is (2) squared - 4(1)(5) = 4 - 20 = -16. Since the discriminant is negative, the equation has no real roots.",
+    ex2:"For x squared - 6x + 9, the discriminant is (-6) squared - 4(1)(9) = 36 - 36 = 0. Since the discriminant equals zero, there is exactly one repeated real root at x = 3.",
+    links:["quadformula","general","linquadsys"]},
+
+  // ---------------- SYSTEMS & INEQUALITIES (violet) ----------------
+  {id:"linquadsys", x:1620, y:1500, rot:2, cat:"systems", label:"Linear-Quadratic Systems",
+    tag:"Systems & Inequalities",
+    text:"A linear-quadratic system consists of one linear equation and one quadratic equation solved simultaneously. The usual method is substitution: set the two expressions for y equal to each other, producing a new quadratic equation in standard form. Solving that equation yields the x-coordinates of the points of intersection. The discriminant of the resulting equation determines whether the line and parabola intersect at two points, are tangent at one point, or do not intersect at all.",
+    ex1:"y = x + 1 and y = x squared - 2x - 3: setting equal gives x squared - 3x - 4 = 0, which has roots x = 4 and x = -1, indicating two points of intersection.",
+    ex2:"y = 2x - 1 and y = x squared: setting equal gives x squared - 2x + 1 = 0, which has a discriminant of zero. This means the line is tangent to the parabola at exactly one point, x = 1.",
+    links:["discriminant","quadformula","quadquadsys","combinedineq"]},
+
+  {id:"quadquadsys", x:1870, y:1880, rot:-1, cat:"systems", label:"Quadratic-Quadratic Systems",
+    tag:"Systems & Inequalities",
+    text:"A quadratic-quadratic system consists of two quadratic equations solved simultaneously. You set the two y expressions equal to each other, and the resulting equation is simplified into standard form. Since the squared terms do not always cancel, this typically produces a new quadratic equation that must be solved to find the x-coordinates of the intersection points. The corresponding y-values are then found by substituting back into either original equation.",
+    ex1:"y = x squared + 1 and y = -x squared + 2x + 5: setting equal gives 2x squared - 2x - 4 = 0, which simplifies to x = 2 or x = -1.",
+    ex2:"y = -x squared + 4 and y = x squared - 4: setting equal gives 2x squared - 8 = 0, which simplifies to x = 2 or x = -2.",
+    links:["linquadsys","quadformula","discriminant"]},
+
+  {id:"quadineq", x:1640, y:2230, rot:1.5, cat:"systems", label:"Quadratic Inequalities",
+    tag:"Systems & Inequalities",
+    text:"A quadratic inequality has the form ax squared + bx + c > 0 (or <, greater than or equal to, less than or equal to) and asks for the x-values where the parabola lies above or below the x-axis. To solve, first find the critical values by solving the related equation set equal to zero. These roots divide the number line into intervals. You pick a test value from each interval and substituted into the inequality to determine whether that interval satisfies the condition. The solution is expressed as an interval or compound inequality.",
+    ex1:"x squared - x - 6 > 0 has critical values x = 3 and x = -2. Testing each interval shows the solution is x < -2 or x > 3.",
+    ex2:"x squared - 4 is less than or equal to 0 has critical values x = 2 and x = -2. Testing each interval shows the solution is -2 is less than or equal to x is less than or equal to 2.",
+    links:["roots","combinedineq","parabola"]},
+
+  {id:"combinedineq", x:1180, y:2330, rot:-2, cat:"systems", label:"Combined Linear-Quadratic Inequalities",
+    tag:"Systems & Inequalities",
+    text:"Combined linear-quadratic inequalities involve both a linear equation and a quadratic equation compared using inequality signs. Start by finding where the line and parabola intersect, the same way you would for a linear-quadratic system. These boundary points divide the number line into regions, and each region is tested in both inequalities to determine where both conditions are satisfied simultaneously.",
+    ex1:"For y > x + 1 and y is less than or equal to x squared - 2x - 3, the boundary points are x = 4 and x = -1. Each region around these values is tested in both inequalities.",
+    ex2:"For y < x squared and y is greater than or equal to x, the boundary points are x = 0 and x = 1. Testing each region in both inequalities identifies where both conditions hold simultaneously.",
+    links:["linquadsys","quadineq","quadformula"]},
+
+  // ---------------- APPLICATIONS (gold) ----------------
+  {id:"minmax", x:760, y:1850, rot:1, cat:"apps", label:"Minimisation and Maximisation Problems",
+    tag:"Applications",
+    text:"Minimisation and maximisation problems are real-world applications where a quantity such as area, profit, or height must be optimised, either made as large or as small as possible. You write a quadratic equation that models the situation, often by using a given constraint to express one variable in terms of another. Once you have the equation in the form y = ax squared + bx + c, the optimal value is found using the vertex of the parabola. The y-coordinate of the vertex gives the maximum or minimum value, and the x-coordinate tells you what input gets you there.",
+    ex1:"A farmer has 40 m of fencing for a rectangular pen. With width x, the area is A = x(20 - x). The vertex of this parabola is at x = 10, giving a maximum area of 100 square metres.",
+    ex2:"A ball's height is modelled by h = -5t squared + 20t + 1. The vertex of this parabola occurs at t = 2 seconds, giving a maximum height of 21 metres.",
+    links:["vertex","vertexformula","parabola"]},
+];
+
+// draw center bubble
+var board = document.getElementById("board");
+var svg = document.getElementById("lines");
+
+var cb = document.createElement("div");
+cb.className = "card center";
+cb.style.left = (center.x - 85) + "px";
+cb.style.top = (center.y - 85) + "px";
+cb.innerText = center.label;
+board.appendChild(cb);
+
+// draw each concept card
+for (var i = 0; i < concepts.length; i++) {
+  var n = concepts[i];
+  var d = document.createElement("div");
+  d.className = "card " + n.cat;
+  d.style.left = n.x + "px";
+  d.style.top = n.y + "px";
+  d.style.transform = "rotate(" + n.rot + "deg)";
+  d.setAttribute("data-id", n.id);
+  d.innerHTML = "<div class='catlabel'>" + n.tag + "</div><div class='cardtitle'>" + n.label + "</div>";
+  d.onclick = function() { openCard(this.getAttribute("data-id")); };
+  board.appendChild(d);
+}
+
+// helper to get position of any node
+function findNode(id) {
+  if (id == "center") return center;
+  for (var i = 0; i < concepts.length; i++) {
+    if (concepts[i].id == id) return concepts[i];
+  }
+}
+
+// draw a curved string between two nodes
+function drawLine(a, b) {
+  var p1 = findNode(a);
+  var p2 = findNode(b);
+  if (!p1 || !p2) return;
+
+  var x1 = (a == "center") ? p1.x : p1.x + 95;
+  var y1 = (a == "center") ? p1.y : p1.y + 55;
+  var x2 = (b == "center") ? p2.x : p2.x + 95;
+  var y2 = (b == "center") ? p2.y : p2.y + 55;
+
+  var mx = (x1 + x2) / 2;
+  var my = (y1 + y2) / 2 - 25;
+
+  var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "M " + x1 + " " + y1 + " Q " + mx + " " + my + " " + x2 + " " + y2);
+  path.setAttribute("stroke", "#b3372c");
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke-width", (a == "center" || b == "center") ? "2.5" : "1.5");
+  path.setAttribute("opacity", (a == "center" || b == "center") ? "0.85" : "0.5");
+  svg.appendChild(path);
+}
+
+// draw center connections
+for (var i = 0; i < centerLinks.length; i++) {
+  drawLine("center", centerLinks[i]);
+}
+
+// draw concept connections without repeating
+var done = [];
+for (var i = 0; i < concepts.length; i++) {
+  for (var j = 0; j < concepts[i].links.length; j++) {
+    var a = concepts[i].id;
+    var b = concepts[i].links[j];
+    var key1 = a + b;
+    var key2 = b + a;
+    if (done.indexOf(key1) == -1 && done.indexOf(key2) == -1) {
+      drawLine(a, b);
+      done.push(key1);
+    }
+  }
+}
+
+// popup
+var overlay = document.getElementById("overlay");
+var popcontent = document.getElementById("popcontent");
+
+function openCard(id) {
+  var node = findNode(id);
+  if (!node) return;
+
+  var html = "<div class='poplabel'>" + node.tag + "</div>";
+  html += "<h2>" + node.label + "</h2>";
+  html += "<p class='poptext'>" + node.text + "</p>";
+  html += "<p class='example'><b>Example 1:</b> " + node.ex1 + "</p>";
+  html += "<p class='example'><b>Example 2:</b> " + node.ex2 + "</p>";
+  html += "<p class='connlabel'>Connects to:</p>";
+  html += "<div class='connections'>";
+  for (var i = 0; i < node.links.length; i++) {
+    var linked = findNode(node.links[i]);
+    var name = linked ? linked.label : node.links[i];
+    html += "<span onclick=\"openCard('" + node.links[i] + "')\"> " + name + "</span>";
+  }
+  html += "</div>";
+
+  popcontent.innerHTML = html;
+  overlay.style.display = "block";
+}
+
+document.getElementById("closebtn").onclick = function() {
+  overlay.style.display = "none";
+};
+
+overlay.onclick = function(e) {
+  if (e.target == overlay) overlay.style.display = "none";
+};
+
+</script>
+</body>
+</html>
